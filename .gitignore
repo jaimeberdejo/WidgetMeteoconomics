@@ -25,9 +25,9 @@ venv/
 ENV/
 env/
 
-# Data files (demasiado grandes)
-data/
-*.csv
+# Data files - PERMITIDOS para push
+# data/ - Comentado para permitir push de datos
+# *.csv - Comentado para permitir push de CSV
 *.xlsx
 *.xls
 
