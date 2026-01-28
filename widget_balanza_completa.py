@@ -1093,42 +1093,172 @@ with tab2:
     # --- TABLA DETALLADA ---
     st.subheader("📋 Datos Detallados por Mes")
 
-    # Pivot table: socios × meses
-    df_pivot = df_display.pivot_table(
-        values='OBS_VALUE',
-        index='partner',
-        columns='TIME_PERIOD',
-        aggfunc='sum',
-        fill_value=0
-    )
+    # Si es modo "Bienes + Servicios", mostrar dos tablas separadas
+    if data_type_option == "Bienes + Servicios" and 'tipo' in df_display.columns:
 
-    # Añadir columna total
-    df_pivot['TOTAL'] = df_pivot.sum(axis=1)
-    df_pivot = df_pivot.sort_values('TOTAL', ascending=False)
+        # TABLA 1: Solo Bienes
+        st.markdown("### 📦 Bienes (Mercancías)")
+        df_bienes = df_display[df_display['tipo'] == 'Bienes']
 
-    # Formatear valores (millones EUR) y añadir nombres con banderas
-    df_pivot_display = df_pivot / 1e6
-    df_pivot_display.index = [format_partner_name(code) for code in df_pivot_display.index]
+        df_pivot_bienes = df_bienes.pivot_table(
+            values='OBS_VALUE',
+            index='partner',
+            columns='TIME_PERIOD',
+            aggfunc='sum',
+            fill_value=0
+        )
 
-    # Formatear valores con estilo
-    st.dataframe(
-        df_pivot_display.style.format("{:.1f}"),
-        use_container_width=True,
-        height=400
-    )
+        df_pivot_bienes['TOTAL'] = df_pivot_bienes.sum(axis=1)
+        df_pivot_bienes = df_pivot_bienes.sort_values('TOTAL', ascending=False)
 
-    st.caption("💡 Valores en millones de euros (M€)")
+        df_pivot_bienes_display = df_pivot_bienes / 1e6
+        df_pivot_bienes_display.index = [format_partner_name(code) for code in df_pivot_bienes_display.index]
 
-    # Botón descarga
-    csv = df_pivot.to_csv().encode('utf-8')
-    st.download_button(
-        label="📥 Descargar CSV",
-        data=csv,
-        file_name=f"socios_{pais_sel}_{flow_option}_{sector_sel}_{start_date}_{end_date}.csv",
-        mime="text/csv"
-    )
+        st.dataframe(
+            df_pivot_bienes_display.style.format("{:.1f}"),
+            use_container_width=True,
+            height=300
+        )
 
-    st.caption(f"📊 Mostrando datos de **{data_label}**: {len(df_display['partner'].unique())} socios comerciales en **{sector_label}** desde {date_str_start} hasta {date_str_end}")
+        # Botón descarga bienes
+        csv_bienes = df_pivot_bienes.to_csv().encode('utf-8')
+        st.download_button(
+            label="📥 Descargar CSV - Bienes",
+            data=csv_bienes,
+            file_name=f"socios_bienes_{pais_sel}_{flow_option}_{start_date}_{end_date}.csv",
+            mime="text/csv",
+            key="download_bienes"
+        )
+
+        st.markdown("---")
+
+        # TABLA 2: Total (Bienes + Servicios)
+        st.markdown("### 🌐 Total (Bienes + Servicios)")
+
+        df_pivot_total = df_display.pivot_table(
+            values='OBS_VALUE',
+            index='partner',
+            columns='TIME_PERIOD',
+            aggfunc='sum',
+            fill_value=0
+        )
+
+        df_pivot_total['TOTAL'] = df_pivot_total.sum(axis=1)
+        df_pivot_total = df_pivot_total.sort_values('TOTAL', ascending=False)
+
+        df_pivot_total_display = df_pivot_total / 1e6
+        df_pivot_total_display.index = [format_partner_name(code) for code in df_pivot_total_display.index]
+
+        st.dataframe(
+            df_pivot_total_display.style.format("{:.1f}"),
+            use_container_width=True,
+            height=300
+        )
+
+        # Botón descarga total
+        csv_total = df_pivot_total.to_csv().encode('utf-8')
+        st.download_button(
+            label="📥 Descargar CSV - Total",
+            data=csv_total,
+            file_name=f"socios_total_{pais_sel}_{flow_option}_{start_date}_{end_date}.csv",
+            mime="text/csv",
+            key="download_total"
+        )
+
+        st.caption("💡 Valores en millones de euros (M€)")
+        st.caption(f"📊 {len(df_display['partner'].unique())} socios comerciales desde {date_str_start} hasta {date_str_end}")
+
+    else:
+        # Modo normal: una sola tabla (Bienes o Servicios)
+
+        # Si flow_option es "Ambos", calcular balance neto (Exportaciones - Importaciones)
+        if flow_option == "Ambos":
+            # Separar exportaciones e importaciones
+            df_exports = df_display[df_display['flow_type'] == 'exports']
+            df_imports = df_display[df_display['flow_type'] == 'imports']
+
+            # Crear pivots separados
+            df_pivot_exp = df_exports.pivot_table(
+                values='OBS_VALUE',
+                index='partner',
+                columns='TIME_PERIOD',
+                aggfunc='sum',
+                fill_value=0
+            )
+
+            df_pivot_imp = df_imports.pivot_table(
+                values='OBS_VALUE',
+                index='partner',
+                columns='TIME_PERIOD',
+                aggfunc='sum',
+                fill_value=0
+            )
+
+            # Calcular balance = Exportaciones - Importaciones
+            df_pivot = df_pivot_exp - df_pivot_imp
+
+            # Añadir columna total (balance total del periodo)
+            df_pivot['TOTAL'] = df_pivot.sum(axis=1)
+            df_pivot = df_pivot.sort_values('TOTAL', ascending=False)
+
+            # Formatear valores (millones EUR) y añadir nombres con banderas
+            df_pivot_display = df_pivot / 1e6
+            df_pivot_display.index = [format_partner_name(code) for code in df_pivot_display.index]
+
+            # Aplicar estilo con colores para balance
+            def color_balance(val):
+                if pd.isna(val):
+                    return ''
+                color = 'color: #00CC96' if val >= 0 else 'color: #EF553B'
+                return color
+
+            st.dataframe(
+                df_pivot_display.style.format("{:.1f}").applymap(color_balance),
+                use_container_width=True,
+                height=400
+            )
+
+            st.caption("💡 Balance comercial en millones de euros (M€)")
+            st.caption("🟢 Verde = Superávit (exportamos más) | 🔴 Rojo = Déficit (importamos más)")
+
+        else:
+            # Modo simple (solo imports o exports)
+            df_pivot = df_display.pivot_table(
+                values='OBS_VALUE',
+                index='partner',
+                columns='TIME_PERIOD',
+                aggfunc='sum',
+                fill_value=0
+            )
+
+            # Añadir columna total
+            df_pivot['TOTAL'] = df_pivot.sum(axis=1)
+            df_pivot = df_pivot.sort_values('TOTAL', ascending=False)
+
+            # Formatear valores (millones EUR) y añadir nombres con banderas
+            df_pivot_display = df_pivot / 1e6
+            df_pivot_display.index = [format_partner_name(code) for code in df_pivot_display.index]
+
+            # Formatear valores con estilo
+            st.dataframe(
+                df_pivot_display.style.format("{:.1f}"),
+                use_container_width=True,
+                height=400
+            )
+
+            st.caption("💡 Valores en millones de euros (M€)")
+
+        # Botón descarga
+        csv = df_pivot.to_csv().encode('utf-8')
+        flow_label = "balance" if flow_option == "Ambos" else flow_option.lower()
+        st.download_button(
+            label="📥 Descargar CSV",
+            data=csv,
+            file_name=f"socios_{pais_sel}_{flow_label}_{sector_sel}_{start_date}_{end_date}.csv",
+            mime="text/csv"
+        )
+
+        st.caption(f"📊 Mostrando datos de **{data_label}**: {len(df_display['partner'].unique())} socios comerciales en **{sector_label}** desde {date_str_start} hasta {date_str_end}")
 
 
 # Footer
