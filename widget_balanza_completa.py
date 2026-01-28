@@ -547,8 +547,6 @@ with tab1:
             meses_diferencia = (max_fecha_bienes.year - max_fecha_servicios.year) * 12 + (max_fecha_bienes.month - max_fecha_servicios.month)
             st.info(f"ℹ️ Datos de servicios disponibles hasta {max_fecha_servicios.strftime('%B %Y')} ({meses_diferencia} meses de retraso)")
 
-        st.success(f"✅ Mostrando {len(df_full_goods):,} registros de bienes + {len(df_full_services):,} de servicios")
-
     st.divider()
 
     # Filtrar datos por país
