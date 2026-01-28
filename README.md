@@ -12,8 +12,6 @@ Dashboard interactivo para análisis de balanza comercial de países europeos co
 - [Estructura de Datos](#-estructura-de-datos)
 - [Sistema de Actualización](#-sistema-de-actualización)
 - [Troubleshooting](#-troubleshooting)
-- [Contribuir](#-contribuir)
-- [Licencia](#-licencia)
 
 ## 📊 Características
 
@@ -173,41 +171,6 @@ python3 update_all_data.py  # Re-ejecutar ETLs
 ### Archivo all_bop_services.csv Ocupa Espacio
 **Causa**: Archivo temporal no eliminado (versiones antiguas)
 **Solución**: Usar etl_partners_services.py unificado que limpia automáticamente
-
-## 🤝 Contribuir
-
-### Reportar Issues
-1. Usa [Issue Tracker](https://github.com/jaimeberdejo/WidgetMeteoconomics/issues)
-2. Incluye:
-   - Descripción del problema
-   - Pasos para reproducir
-   - Logs de error
-   - Versión Python: `python3 --version`
-   - Versiones dependencias: `pip list`
-
-### Pull Requests
-1. Fork del repositorio
-2. Crear branch: `git checkout -b feature/nueva-funcionalidad`
-3. Commit: `git commit -m 'feat: añadir nueva funcionalidad'`
-4. Push: `git push origin feature/nueva-funcionalidad`
-5. Abrir Pull Request con descripción detallada
-
-### Convención de Commits
-```
-feat: nueva funcionalidad
-fix: corrección de bug
-docs: cambios en documentación
-refactor: refactorización sin cambio funcional
-test: añadir/modificar tests
-style: cambios de formato
-perf: mejoras de rendimiento
-```
-
-## 📄 Licencia
-MIT License - Ver `LICENSE` para detalles
-
-## 👨‍💻 Autor
-Desarrollado por [Jaime Berdejo](https://github.com/jaimeberdejo)
 
 ## 📊 Fuentes de Datos
 - **Eurostat COMEXT** (DS-059331): Comercio internacional de mercancías
