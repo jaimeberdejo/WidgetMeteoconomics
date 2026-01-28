@@ -1,11 +1,23 @@
 import warnings
-warnings.filterwarnings('ignore', message='.*keyword arguments have been deprecated.*')
+import sys
+import logging
+
+# Suprimir TODOS los warnings de deprecación
+warnings.filterwarnings('ignore')
+logging.getLogger('plotly').setLevel(logging.ERROR)
+
+# Redirigir stderr temporalmente para capturar warnings de Plotly
+import io
+sys.stderr = io.StringIO()
 
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import os
 from datetime import datetime
+
+# Restaurar stderr
+sys.stderr = sys.__stderr__
 
 # Importar desde etl_loader_completo
 try:
