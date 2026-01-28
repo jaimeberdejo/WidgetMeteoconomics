@@ -636,7 +636,7 @@ with tab1:
         ),
         margin=dict(t=50)
     )
-    st.plotly_chart(fig_line, use_container_width=True)
+    st.plotly_chart(fig_line, width="stretch")
 
     # --- 3. ANÁLISIS POR SECTOR (Dinámico) ---
     st.subheader("🔍 Desglose por Sectores (Acumulado)")
@@ -686,7 +686,7 @@ with tab1:
         margin=dict(t=80)
     )
 
-    st.plotly_chart(fig_bar, use_container_width=True)
+    st.plotly_chart(fig_bar, width="stretch")
 
 
 with tab2:
@@ -1019,7 +1019,7 @@ with tab2:
             margin=dict(l=150, r=50, t=50, b=50)
         )
 
-    st.plotly_chart(fig_bar, use_container_width=True)
+    st.plotly_chart(fig_bar, width="stretch")
 
     # --- GRÁFICO 2: Balance Comercial (solo en modo "Ambos") ---
     if flow_option == "Ambos":
@@ -1056,7 +1056,7 @@ with tab2:
         # Añadir línea vertical en 0
         fig_balance.add_vline(x=0, line_width=2, line_dash="dash", line_color="gray")
 
-        st.plotly_chart(fig_balance, use_container_width=True)
+        st.plotly_chart(fig_balance, width="stretch")
         st.caption("💡 Verde = Superávit (exportamos más de lo que importamos) | Rojo = Déficit (importamos más de lo que exportamos)")
 
     # --- GRÁFICO 3: Evolución temporal (Top 5) ---
@@ -1088,7 +1088,7 @@ with tab2:
         margin=dict(r=150)
     )
 
-    st.plotly_chart(fig_line, use_container_width=True)
+    st.plotly_chart(fig_line, width="stretch")
 
     # --- TABLA DETALLADA ---
     st.subheader("📋 Datos Detallados por Mes")
@@ -1116,7 +1116,7 @@ with tab2:
 
         st.dataframe(
             df_pivot_bienes_display.style.format("{:.1f}"),
-            use_container_width=True,
+            width="stretch",
             height=300
         )
 
@@ -1151,7 +1151,7 @@ with tab2:
 
         st.dataframe(
             df_pivot_total_display.style.format("{:.1f}"),
-            use_container_width=True,
+            width="stretch",
             height=300
         )
 
@@ -1214,7 +1214,7 @@ with tab2:
 
             st.dataframe(
                 df_pivot_display.style.format("{:.1f}").applymap(color_balance),
-                use_container_width=True,
+                width="stretch",
                 height=400
             )
 
@@ -1242,7 +1242,7 @@ with tab2:
             # Formatear valores con estilo
             st.dataframe(
                 df_pivot_display.style.format("{:.1f}"),
-                use_container_width=True,
+                width="stretch",
                 height=400
             )
 
