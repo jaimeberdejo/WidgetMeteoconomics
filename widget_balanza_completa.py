@@ -651,7 +651,7 @@ with tab1:
         ),
         margin=dict(t=50)
     )
-    st.plotly_chart(fig_line, width="stretch")
+    st.plotly_chart(fig_line, width="stretch", config={"displayModeBar": False})
 
     # --- 3. ANÁLISIS POR SECTOR (Dinámico) ---
     st.subheader("🔍 Desglose por Sectores (Acumulado)")
@@ -701,7 +701,7 @@ with tab1:
         margin=dict(t=80)
     )
 
-    st.plotly_chart(fig_bar, width="stretch")
+    st.plotly_chart(fig_bar, width="stretch", config={"displayModeBar": False})
 
 
 with tab2:
@@ -1034,7 +1034,7 @@ with tab2:
             margin=dict(l=150, r=50, t=50, b=50)
         )
 
-    st.plotly_chart(fig_bar, width="stretch")
+    st.plotly_chart(fig_bar, width="stretch", config={"displayModeBar": False})
 
     # --- GRÁFICO 2: Balance Comercial (solo en modo "Ambos") ---
     if flow_option == "Ambos":
@@ -1071,7 +1071,7 @@ with tab2:
         # Añadir línea vertical en 0
         fig_balance.add_vline(x=0, line_width=2, line_dash="dash", line_color="gray")
 
-        st.plotly_chart(fig_balance, width="stretch")
+        st.plotly_chart(fig_balance, width="stretch", config={"displayModeBar": False})
         st.caption("💡 Verde = Superávit (exportamos más de lo que importamos) | Rojo = Déficit (importamos más de lo que exportamos)")
 
     # --- GRÁFICO 3: Evolución temporal (Top 5) ---
@@ -1103,7 +1103,7 @@ with tab2:
         margin=dict(r=150)
     )
 
-    st.plotly_chart(fig_line, width="stretch")
+    st.plotly_chart(fig_line, width="stretch", config={"displayModeBar": False})
 
     # --- TABLA DETALLADA ---
     st.subheader("📋 Datos Detallados por Mes")
